@@ -1,20 +1,35 @@
+import { useRouter } from "expo-router";
 import { Pressable, StatusBar, StyleSheet, Text } from "react-native";
 import { View } from "react-native"; 
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function WelcomeScreen() {
+    const router = useRouter();
+
+    function login() {
+        router.navigate('/accounts/login');
+    }
+
+    function createAccount() {
+        router.navigate('/accounts/createAccount')
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle='dark-content' backgroundColor='#f5f5f5' />
-            <View>
+            <View style={styles.logoHolder}>
                 <Text style={styles.logoText}>Estate Facility Booking</Text>
             </View>
-            <View>
-                <Pressable>
-                    <Text>Log In</Text>
+            <View style={styles.buttonHolder}>
+                <Pressable style={({pressed}) => [
+                    pressed ? styles.buttonPressed : styles.button,
+                ]} onPress={login}>
+                    <Text style={styles.buttonText}>Log In</Text>
                 </Pressable>
-                <Pressable>
-                    <Text>Create an Account</Text>
+                <Pressable style={({pressed}) => [
+                    pressed ? styles.buttonPressed : styles.button,
+                ]} onPress={createAccount}>
+                    <Text style={styles.buttonText}>Register</Text>
                 </Pressable>
             </View>
         </SafeAreaView>
@@ -26,11 +41,42 @@ const styles = StyleSheet.create({
         backgroundColor: "#f5f5f5",
         flex: 1,
     },
+    logoHolder: {
+        flex: 1,
+        marginTop: 150
+    },
     logoText: {
         fontFamily: 'Figtree-VariableFont_wght',
         color: '#344E41',
         fontSize: 40,
-        textAlign: "center"
+        textAlign: "center",
+    },
+    buttonHolder: {
+        flex: 1,
+    },
+    button: {
+        backgroundColor: "#588157",
+        padding: 15,
+        borderRadius: 25,
+        width: 180,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 20,
+    },
+    buttonPressed: {
+        backgroundColor: "#4c684b",
+        padding: 15,
+        borderRadius: 25,
+        width: 180,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 20,
+    },
+    buttonText: {
+        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontSize: 18,
+        color: '#ffffff',
+        textAlign: 'center',
     }
 })
 

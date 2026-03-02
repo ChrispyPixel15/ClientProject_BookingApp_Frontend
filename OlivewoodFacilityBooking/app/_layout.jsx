@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,10 +26,15 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false, headerTitle: "OlivewoodFacilityBooking", headerShadowVisible: false}}>
-        <Stack.Screen name='index' />
-      </Stack>
-    </SafeAreaProvider>      
+    <GestureHandlerRootView>
+      <SafeAreaProvider>
+        <Stack screenOptions={{ headerShown: false, headerTitle: "OlivewoodFacilityBooking", headerShadowVisible: false}}>
+          <Stack.Screen name='index' />
+          <Stack.Screen name='accounts/login' />
+          <Stack.Screen name='accounts/createAccount' />
+          <Stack.Screen name='facilities/facilities' />
+        </Stack>
+      </SafeAreaProvider> 
+    </GestureHandlerRootView>         
   );
 }
