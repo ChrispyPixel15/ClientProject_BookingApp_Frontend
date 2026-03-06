@@ -3,19 +3,11 @@ import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-function Login() {
+function ResetGranted() {
     const router = useRouter();
-    
-    function createAccount() {
-        router.navigate('/accounts/createAccount');
-    }
 
-    function login() {
-        router.navigate('/facilities/facilities');
-    }
-
-    function resetPin() {
-        router.navigate('/accounts/pinResetInfo');
+    function reset() {
+        router.navigate('/accounts/login')
     }
 
     return (
@@ -24,23 +16,14 @@ function Login() {
                 <View style={styles.logoHolder}>
                     <Text style={styles.logoText}>Estate Facility Booking</Text>
                 </View>
-                <Text style={styles.loginText}>Log In</Text>
+                <Text style={styles.loginText}>PIN Reset</Text>
                 <View style={styles.formHolder}>
-                    <Text style={styles.inputLabel}>Cell Number</Text>
-                    <TextInput style={styles.input} placeholder="Cell Number..." placeholderTextColor="#a3b18a" />
-                    <Text style={styles.inputLabel}>PIN</Text>
-                    <TextInput style={[styles.input, {marginBottom: 8}]} placeholder="PIN..." placeholderTextColor="#a3b18a" />
-                    <Pressable onPress={resetPin}>
-                        <Text style={styles.resetLink}>Reset PIN</Text>
-                    </Pressable>
+                    <Text style={styles.inputLabel}>New PIN</Text>
+                    <TextInput style={styles.input} placeholder="PIN..." placeholderTextColor="#a3b18a" />
                     <Pressable style={({pressed}) => [
                         pressed ? styles.buttonPressed : styles.button
-                    ]} onPress={login}>
-                        <Text style={styles.buttonText}>Log In</Text>
-                    </Pressable>
-                    <Text style={styles.bottomText}>Not registered?</Text>
-                    <Pressable onPress={createAccount}>
-                        <Text style={styles.link}>Register</Text>
+                    ]} onPress={reset}>
+                        <Text style={styles.buttonText}>Reset</Text>
                     </Pressable>
                 </View>
         </SafeAreaView>
@@ -154,4 +137,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Login;
+export default ResetGranted;

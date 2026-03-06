@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 30,
+        elevation: 5
     },
     buttonPressed: {
         backgroundColor: "#4c684b",
@@ -121,6 +122,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 30,
+        elevation: 5
     },
     buttonText: {
         fontFamily: 'Roboto-VariableFont_wdth,wght',

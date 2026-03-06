@@ -2,11 +2,14 @@ import { useRouter } from "expo-router";
 import { Pressable, StatusBar, StyleSheet, Text } from "react-native";
 import { View } from "react-native"; 
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getUsers } from "../api/api";
+
 
 function WelcomeScreen() {
     const router = useRouter();
 
     function login() {
+        getUsers();
         router.navigate('/accounts/login');
     }
 
@@ -62,6 +65,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 20,
+        elevation: 5
     },
     buttonPressed: {
         backgroundColor: "#4c684b",
@@ -71,6 +75,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 20,
+        elevation: 5
     },
     buttonText: {
         fontFamily: 'Roboto-VariableFont_wdth,wght',

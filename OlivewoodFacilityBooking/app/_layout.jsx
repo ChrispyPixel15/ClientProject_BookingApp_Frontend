@@ -33,6 +33,10 @@ export default function RootLayout() {
           <Stack.Screen name='accounts/login' />
           <Stack.Screen name='accounts/createAccount' />
           <Stack.Screen name='facilities/facilities' />
+          <Stack.Screen name='settings/settings' />
+          <Stack.Screen name='accounts/pinResetInfo' />
+          <Stack.Screen name='accounts/resetDenied' />
+          <Stack.Screen name='accounts/resetGranted' />
         </Stack>
       </SafeAreaProvider> 
     </GestureHandlerRootView>         
