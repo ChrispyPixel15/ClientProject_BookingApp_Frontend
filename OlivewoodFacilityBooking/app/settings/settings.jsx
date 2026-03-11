@@ -2,10 +2,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons } from '@react-native-vector-icons/octicons';
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
+import { UserContext } from "@/contexts/UserContext";
 
 function Settings() {
+    const { logoutHandler } = useContext(UserContext);
+
     const router = useRouter();
     const [user, setUser] = useState({
         id: 0,
@@ -89,6 +92,12 @@ function Settings() {
                     In order to change PIN please contact admin.
                 </Text>
             )}
+            <Pressable style={({pressed}) => [
+                pressed ? styles.buttonPressed : styles.button
+            ]}
+            onPress={logoutHandler}>
+                <Text style={styles.buttonText}>Log Out</Text>
+            </Pressable>
             {edit ? (
                 <View style={styles.overlay}>
                     <View style={styles.editFacilityHolder}>

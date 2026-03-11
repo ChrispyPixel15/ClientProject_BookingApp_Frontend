@@ -1,15 +1,15 @@
+import { test } from "@/api/api";
 import { useRouter } from "expo-router";
 import { Pressable, StatusBar, StyleSheet, Text } from "react-native";
 import { View } from "react-native"; 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getUsers } from "../api/api";
 
 
 function WelcomeScreen() {
     const router = useRouter();
 
     function login() {
-        getUsers();
+        test();
         router.navigate('/accounts/login');
     }
 

@@ -1,27 +1,40 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons } from '@react-native-vector-icons/octicons';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
+import { createFacility, getAllFacilities } from "@/api/api";
 
 function Facilities() {
     const user = 'ADMIN';
-    const [facs, setfacs] = useState([
-        {
-            id: 1,
-            name: 'Tennis Court 1',
-            fullyBooked: false
-        },
-        {
-            id: 2,
-            name: 'Tennis Court 2',
-            fullyBooked: true
-        }
-    ]);
+    const [refreshKey, setRefreshKey] = useState(0);
+    const [facs, setfacs] = useState([]);
     const [addFacility, setAddFacility] = useState(false);
     const router = useRouter();
     const [edit, setEdit] = useState(false);
+    const [facilityName, setFacilityName] = useState('');
+
+    useEffect(() => {
+        async function fetchFacilities() {
+            try {
+                const data = await getAllFacilities();
+                setfacs(data);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+        fetchFacilities();
+        console.log(facs);
+    }, [refreshKey])
+
+    function createNewFacility() {
+        createFacility(facilityName);
+        setRefreshKey(refreshKey + 1);
+        setFacilityName('');
+        setAddFacility(false);
+    }
 
     function goToFacility(id) {
         router.push(`/facilities/${id}`);
@@ -92,10 +105,11 @@ function Facilities() {
                         </Pressable>
                         <Text style={styles.addHeading}>New Facility</Text>
                         <Text style={styles.inputLabel}>Name</Text>
-                        <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" />
+                        <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" onChangeText={(e) => setFacilityName(e)} value={facilityName} />
                         <Pressable style={({pressed}) => [
                             pressed ? styles.buttonPressed : styles.button
-                        ]}>
+                        ]}
+                        onPress={createNewFacility}>
                             <Text style={styles.buttonText}>Create</Text>
                         </Pressable>
                     </View>

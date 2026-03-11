@@ -1,17 +1,25 @@
+import { registerUser } from "@/api/api";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function CreateAccount() {
     const router = useRouter();
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
+    const [unit, setUnit] = useState('');
+    const [pin, setPin] = useState('');
+
 
     function login() {
         router.navigate('/accounts/login');
     }
 
     function createAccount() {
-        router.navigate('/facilities/facilities')
+        registerUser(name, number, unit, pin);
+        router.navigate('/accounts/login');
     }
 
     return (
@@ -23,13 +31,13 @@ function CreateAccount() {
             <Text style={styles.registerText}>Register</Text>
             <View style={styles.formHolder}>
                 <Text style={styles.inputLabel}>Name</Text>
-                <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" />
+                <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" onChangeText={(e) => setName(e)} value={name} />
                 <Text style={styles.inputLabel}>Cell Number</Text>
-                <TextInput style={styles.input} placeholder="Cell Number..." placeholderTextColor="#a3b18a" />
+                <TextInput style={styles.input} placeholder="Cell Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNumber(e)} value={number} />
                 <Text style={styles.inputLabel}>House Number</Text>
-                <TextInput style={styles.input} placeholder="House Number..." placeholderTextColor="#a3b18a" />
+                <TextInput style={styles.input} placeholder="House Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setUnit(e)} value={unit} />
                 <Text style={styles.inputLabel}>PIN</Text>
-                <TextInput style={[styles.input, {marginBottom: 0}]} placeholder="PIN..." placeholderTextColor="#a3b18a" />
+                <TextInput style={[styles.input, {marginBottom: 0}]} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setPin(e)} value={pin} />
                 <Text style={styles.pinText}>Choose a 5 digit PIN</Text>
                 <Pressable style={({pressed}) => [
                    pressed ? styles.buttonPressed : styles.button
