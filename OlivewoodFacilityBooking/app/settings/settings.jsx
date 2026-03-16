@@ -2,33 +2,64 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons } from '@react-native-vector-icons/octicons';
 import { useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { UserContext } from "@/contexts/UserContext";
+import { acceptRequest, editUser, getUser, test } from "@/api/api";
 
 function Settings() {
     const { logoutHandler } = useContext(UserContext);
 
     const router = useRouter();
-    const [user, setUser] = useState({
-        id: 0,
-        role: 'ADMIN',
-        name: 'User Name',
-        number: '080 000 0000',
-        unit: '1234'
-    });
+    const [user, setUser] = useState({});
     const [edit, setEdit] = useState(false);
     const [editMode, setEditMode] = useState('');
     const [newInfo, setNewInfo] = useState('');
     const [pinReset, setPinReset] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    const [resName, setResName] = useState('');
+    const [resUnit, setResUnit] = useState('');
+    const [resNumber, setResNumber] = useState('');
+
+    useEffect(() => {
+        async function getUserInfo() {
+            const info = await getUser();
+            setUser(info);
+        }
+        getUserInfo();
+    }, [refreshKey])
 
     function goHome() {
         router.navigate('/facilities/facilities');
     }
 
-    function editInfo(mode) {
+    function allowReset() {
+        acceptRequest(resName, resNumber, resUnit);
+        setResName('');
+        setResNumber('');
+        setResUnit('');
+        setPinReset(false);
+    }
+
+    function editAInformation() {
+        if (editMode === "Name") {
+            editUser(user.id, {name: newInfo});
+        }
+        else if (editMode === "Number") {
+            editUser(user.id, {number: newInfo});
+        }
+        else {
+            editUser(user.id, {unit: newInfo});
+        }
+        setRefreshKey(refreshKey + 1);
+        setEdit(false);
+    }
+
+    function editInfo(mode, info) {
         setEdit(true);
         setEditMode(mode);
+        setNewInfo(info);
     }
 
     return (
@@ -51,7 +82,7 @@ function Settings() {
                     <Pressable style={({pressed}) => [
                         pressed ? styles.editPressed : styles.edit
                     ]}
-                    onPress={() => editInfo('Name')}>
+                    onPress={() => editInfo('Name', user.name)}>
                         <Octicons name='pencil' color="#344e41" size={24}/>
                     </Pressable>
                 </View>
@@ -63,7 +94,7 @@ function Settings() {
                     <Pressable style={({pressed}) => [
                         pressed ? styles.editPressed : styles.edit
                     ]}
-                    onPress={() => editInfo('Number')}>
+                    onPress={() => editInfo('Number', user.number)}>
                         <Octicons name='pencil' color="#344e41" size={24}/>
                     </Pressable>
                 </View>
@@ -75,7 +106,7 @@ function Settings() {
                     <Pressable style={({pressed}) => [
                         pressed ? styles.editPressed : styles.edit
                     ]}
-                    onPress={() => editInfo('Unit')}>
+                    onPress={() => editInfo('Unit', user.unit)}>
                         <Octicons name='pencil' color="#344e41" size={24}/>
                     </Pressable>
                 </View>
@@ -100,16 +131,17 @@ function Settings() {
             </Pressable>
             {edit ? (
                 <View style={styles.overlay}>
-                    <View style={styles.editFacilityHolder}>
+                    <View style={styles.editInfoHolder}>
                         <Pressable style={styles.close} onPress={() => setEdit(false)}>
                             <Octicons name='x' color="#344e41" size={24}/>
                         </Pressable>
                         <Text style={styles.editHeading}>Edit {editMode}</Text>
                         <Text style={styles.inputLabel}>{editMode}</Text>
-                        <TextInput style={styles.input} value={newInfo} onChange={(e) => setNewInfo(e)} placeholder={`${editMode}...`} placeholderTextColor="#a3b18a" />
+                        <TextInput style={styles.input} onChangeText={(e) => setNewInfo(e)} value={newInfo} placeholder={`${editMode}...`} placeholderTextColor="#a3b18a" />
                         <Pressable style={({pressed}) => [
                             pressed ? styles.buttonPressed : styles.button
-                        ]}>
+                        ]}
+                        onPress={editAInformation}>
                             <Text style={styles.buttonText}>Edit</Text>
                         </Pressable>
                     </View>
@@ -125,14 +157,15 @@ function Settings() {
                         </Pressable>
                         <Text style={styles.editHeading}>PIN Reset Request</Text>
                         <Text style={styles.inputLabel}>Resident Name</Text>
-                        <TextInput style={styles.input} placeholder='Resident Name...' placeholderTextColor="#a3b18a" />
+                        <TextInput style={styles.input} onChangeText={(e) => setResName(e)} value={resName} placeholder='Resident Name...' placeholderTextColor="#a3b18a" />
                         <Text style={styles.inputLabel}>Unit</Text>
-                        <TextInput style={styles.input} placeholder='Unit...' placeholderTextColor="#a3b18a" />
+                        <TextInput style={styles.input} onChangeText={(e) => setResUnit(e)} value={resUnit} placeholder='Unit...' placeholderTextColor="#a3b18a" />
                         <Text style={styles.inputLabel}>Cell Number</Text>
-                        <TextInput style={styles.input} placeholder='Cell Number...' placeholderTextColor="#a3b18a" />
+                        <TextInput style={styles.input} onChangeText={(e) => setResNumber(e)} value={resNumber} placeholder='Cell Number...' placeholderTextColor="#a3b18a" />
                         <Pressable style={({pressed}) => [
                             pressed ? styles.buttonPressed : styles.button
-                        ]}>
+                        ]}
+                        onPress={allowReset}>
                             <Text style={styles.buttonText}>Allow Reset</Text>
                         </Pressable>
                     </View>

@@ -1,12 +1,29 @@
-import { useRouter } from "expo-router";
+import { getAllUsers, updateUserPin } from "@/api/api";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function ResetGranted() {
+    const { id } = useLocalSearchParams();
     const router = useRouter();
+    const [newPin, setNewPin] = useState('');
+    const [allUsers, setAllUsers] = useState([]);
 
-    function reset() {
+    useEffect(() => {
+        async function findAllUsers() {
+            const data = await getAllUsers();
+            console.log(data);
+            setAllUsers(data);
+        }
+        findAllUsers();
+    }, []);
+
+    async function reset() {
+        const user = allUsers.filter((user) => user.id === parseInt(id));
+        console.log(user[0].name);
+        await updateUserPin(user[0].name, newPin, user[0].number);
         router.navigate('/accounts/login')
     }
 
@@ -19,7 +36,7 @@ function ResetGranted() {
                 <Text style={styles.loginText}>PIN Reset</Text>
                 <View style={styles.formHolder}>
                     <Text style={styles.inputLabel}>New PIN</Text>
-                    <TextInput style={styles.input} placeholder="PIN..." placeholderTextColor="#a3b18a" />
+                    <TextInput style={styles.input} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNewPin(e)} value={newPin} />
                     <Pressable style={({pressed}) => [
                         pressed ? styles.buttonPressed : styles.button
                     ]} onPress={reset}>

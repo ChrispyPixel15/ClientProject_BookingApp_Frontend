@@ -4,16 +4,30 @@ import { Octicons } from '@react-native-vector-icons/octicons';
 import { useEffect, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
-import { createFacility, getAllFacilities } from "@/api/api";
+import { createFacility, deleteFacility, editFacility, getAllFacilities, getUserRole } from "@/api/api";
 
 function Facilities() {
-    const user = 'ADMIN';
+    const [userRole, setUserRole] = useState('');
     const [refreshKey, setRefreshKey] = useState(0);
     const [facs, setfacs] = useState([]);
     const [addFacility, setAddFacility] = useState(false);
     const router = useRouter();
     const [edit, setEdit] = useState(false);
     const [facilityName, setFacilityName] = useState('');
+    const [selectedFacilityId, setSelectedFacilityId] = useState();
+
+    useEffect(() => {
+        async function checkRole() {
+            try {
+                const role = await getUserRole();
+                setUserRole(role);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+        checkRole();
+    }, []);
 
     useEffect(() => {
         async function fetchFacilities() {
@@ -36,6 +50,27 @@ function Facilities() {
         setAddFacility(false);
     }
 
+    function deleteAFacility(id) {
+        deleteFacility(id);
+        setRefreshKey(refreshKey + 1);
+        setSelectedFacilityId(null);
+        setEdit(false);
+    }
+
+    function activateEditFacility(id, name) {
+        setSelectedFacilityId(id);
+        setFacilityName(name)
+        setEdit(true);
+    }
+
+    function editAFacility(id) {
+        editFacility(id, facilityName);
+        setRefreshKey(refreshKey + 1);
+        setSelectedFacilityId(null);
+        setFacilityName('');
+        setEdit(false);
+    }
+
     function goToFacility(id) {
         router.push(`/facilities/${id}`);
     }
@@ -54,7 +89,7 @@ function Facilities() {
                     <Octicons name='gear' color="#344e41" size={24}/>
                 </Pressable>
                 <Text style={styles.heading}>Facilities</Text>
-                { user === "ADMIN" ? (
+                { userRole === "ADMIN" ? (
                     <Pressable style={({pressed}) => [
                         pressed ? styles.addPressed : styles.add
                     ]}
@@ -83,12 +118,12 @@ function Facilities() {
                             }
                         }}
                         key={fac.id}>
-                            {user === 'ADMIN' ? (<Pressable style={({pressed}) => [
+                            {userRole === 'ADMIN' ? (<Pressable style={({pressed}) => [
                                 pressed ? styles.editPressed : styles.edit
                             ]}
-                            onPress={() => setEdit(true)}>
+                            onPress={() => activateEditFacility(fac.id, fac.name)}>
                                 <Octicons name='pencil' color="#ffffff" size={16}/>
-                            </Pressable>) : (<View></View>)}
+                            </Pressable>) : (<View style={styles.edit}></View>)}
                             <Text style={fac.fullyBooked ? styles.facilityUnavailableText : styles.facilityText}>{fac.name}</Text>
                             <View style={fac.fullyBooked ? styles.slotsUnavailable : styles.slots}>
                                 <Text style={fac.fullyBooked ? styles.slotsUnavailableText : styles.slotsText}>{fac.fullyBooked ? "Slots Unavailable" : "Slots Available"}</Text>
@@ -125,16 +160,18 @@ function Facilities() {
                         </Pressable>
                         <Text style={styles.addHeading}>Edit Facility</Text>
                         <Text style={styles.inputLabel}>Name</Text>
-                        <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" />
+                        <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" onChangeText={(e) => setFacilityName(e)} value={facilityName} />
                         <View style={styles.buttonHolder}>
                             <Pressable style={({pressed}) => [
                                 pressed ? styles.buttonPressed : styles.button
-                            ]}>
+                            ]}
+                            onPress={() => editAFacility(selectedFacilityId, facilityName)}>
                                 <Text style={styles.buttonText}>Edit</Text>
                             </Pressable>
                             <Pressable style={({pressed}) => [
                                 pressed ? styles.deletePressed : styles.delete
-                            ]}>
+                            ]}
+                            onPress={() => deleteAFacility(selectedFacilityId)}>
                                 <Text style={styles.buttonText}>Delete</Text>
                             </Pressable>
                         </View>

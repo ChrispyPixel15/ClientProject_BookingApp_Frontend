@@ -1,35 +1,76 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons } from '@react-native-vector-icons/octicons';
 import { useEffect, useState } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { deleteBooking, facilityBookings, getAllUsers, getUserID, getUserRole, newBooking, openFacility, updateBooking } from "@/api/api";
 
 function Facility() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
+    const [currentFacility, setCurrentFacility] = useState({});
+    const [currentUserId, setCurrentUserId] = useState('');
     const [add, setAdd] = useState(false);
     const [date, setDate] = useState(new Date());
-    const displayDate = date.toLocaleDateString();
+    const displayDate = date.toISOString().split('T')[0];
     const [show, setShow] = useState(false);
-    const [bookings, setBookings] = useState([
-        {
-            id: 1,
-            time: "11:00 - 12:00",
-            name: 'John Doe',
-            date: "2026/03/08"
-        }
-    ]);
+    const [bookings, setBookings] = useState([]);
     const [edit, setEdit] = useState(false);
+    const [chooseTime, setChooseTime] = useState(false);
+    const [allUsers, setAllUsers] = useState([]);
+    const [userRole, setUserRole] = useState('');
+    const [selectedBookingId, setSelectedBookingId] = useState('');
 
     const [selectedSlot, setSelectedSlot] = useState(`Select a slot.`)
+    const [refreshKey, setRefreshKey] = useState(0);
     
     const arrayRange = (start, end, step = 1) => Array.from({length: end - start / step + 1}, (_, i) => start + i * step);
-    const numberRange = arrayRange(8,18);
+    const numberRange = arrayRange(8,17);
     const timeSlotNumbers = numberRange.map((number) => ({
         key: `${number.toString().padStart(2, '0')}:00`,
         slot: `${number.toString().padStart(2, '0')}:00 - ${(number + 1).toString().padStart(2, '0')}:00`
     })); 
+
+    useEffect(() => {
+        async function fetchFacility() {
+            const data = await openFacility(id);
+            setCurrentFacility(data);
+        }
+        fetchFacility();
+
+        async function findUserId() {
+            const useid = await getUserID();
+            setCurrentUserId(useid);
+            console.log(useid);
+        }
+        findUserId();
+
+        async function findAllUsers() {
+            const data = await getAllUsers();
+            setAllUsers(data);
+        }
+        findAllUsers();
+
+        async function checkRole() {
+            try {
+                const role = await getUserRole();
+                setUserRole(role);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+        checkRole();
+    }, [])
+
+    useEffect(() => {
+        async function fetchFacilityBookings() {
+            const data = await facilityBookings(id);
+            setBookings(data);
+        }
+        fetchFacilityBookings();
+    }, [refreshKey])
 
     function goHome() {
         router.navigate('/facilities/facilities');
@@ -41,6 +82,40 @@ function Facility() {
         setDate(currentDate);
     }
 
+    function chooseATime(slot) {
+        setSelectedSlot(slot);
+        setChooseTime(false);
+    }
+
+    async function createNewBooking() {
+        await newBooking(currentUserId, id, date.toISOString().split('T')[0], selectedSlot);
+        setRefreshKey(refreshKey + 1);
+        setAdd(false);
+        setSelectedSlot('Select a Slot');
+    }
+
+    function editBooking(bookingid, date, time) {
+        updateBooking(bookingid, date, time);
+        setChooseTime('Select a Slot');
+        setSelectedBookingId('');
+        setRefreshKey(refreshKey + 1);
+        setEdit(false);
+    }
+
+    function activateEdit(time, id) {
+        setEdit(true);
+        setSelectedSlot(time);
+        setSelectedBookingId(id);
+    }
+
+    async function removeBooking(id) {
+        await deleteBooking(id);
+        setSelectedSlot('Select a Slot');
+        setSelectedBookingId(null);
+        setRefreshKey(refreshKey + 1);
+        setEdit(false);
+    } 
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -51,7 +126,7 @@ function Facility() {
                     onPress={goHome}>
                         <Octicons name='home' color="#344e41" size={24}/>
                     </Pressable>
-                    <Text style={styles.heading}>Tennis Courts 1</Text>
+                    <Text style={styles.heading}>{currentFacility.name}</Text>
                     <Pressable style={({pressed}) => [
                         pressed ? styles.addPressed : styles.add
                     ]}
@@ -77,13 +152,19 @@ function Facility() {
                                     if (booking.time === number.slot && displayDate === booking.date) {
                                         return (
                                             <View key={key} style={styles.timeCard}>
-                                                <Pressable style={({pressed}) => [
-                                                    pressed ? styles.editPressed : styles.edit
-                                                ]}
-                                                onPress={() => setEdit(true)}>
-                                                    <Octicons name='pencil' color="#ffffff" size={16}/>
-                                                </Pressable>
-                                                <Text style={styles.timeCardText}>{booking.name}</Text>
+                                                {
+                                                    (userRole === "ADMIN" || currentUserId === allUsers.find(user => user.id === booking.userid).id) ? (
+                                                        <Pressable style={({pressed}) => [
+                                                            pressed ? styles.editPressed : styles.edit
+                                                        ]}
+                                                        onPress={() => activateEdit(booking.time, booking.id)}>
+                                                            <Octicons name='pencil' color="#ffffff" size={16}/>
+                                                        </Pressable>
+                                                    ) : (
+                                                        <View style={styles.edit}></View>
+                                                    )
+                                                }
+                                                <Text style={styles.timeCardText}>{allUsers.find((user) => user.id === booking.userid).name}</Text>
                                                 <Text style={styles.timeCardText}>{booking.time}</Text>
                                             </View>
                                         )
@@ -97,7 +178,10 @@ function Facility() {
             {add ? (
                 <View style={styles.overlay}>
                     <View style={styles.addBookingHolder}>
-                        <Pressable style={styles.close} onPress={() => setAdd(false)}>
+                        <Pressable style={styles.close} onPress={() => {
+                            setAdd(false);
+                            setSelectedSlot('Select a Slot');
+                        }}>
                             <Octicons name='x' color="#344e41" size={24}/>
                         </Pressable>
                         <Text style={styles.addHeading}>New Booking</Text>
@@ -107,16 +191,43 @@ function Facility() {
                         onPress={() => setShow(true)}>
                             <Octicons name='calendar' color="#344e41" size={16}/>
                             <Text>{displayDate && displayDate}</Text>
-                        </Pressable>
+                        </Pressable>     
                         <View style={styles.slotSelectHolder}>
                             <Text style={[styles.inputLabel, {padding: 10}]}>Time Slot:</Text>
-                            <Pressable style={styles.slotSelection}>
+                            <Pressable style={styles.slotSelection} onPress={() => setChooseTime(!chooseTime)}>
                                 <Text style={styles.slotText}>{selectedSlot}</Text>
                             </Pressable>
-                        </View>
+                        </View>                                                       
+                        <Modal
+                            animationType="fade"
+                            transparent={true}
+                            visible={chooseTime}
+                            onRequestClose={() => setChooseTime(false)}
+                        >
+                            <View style={styles.slotList}>
+                                {
+                                    timeSlotNumbers.map((number) => {
+                                        const isbooked = bookings.some((booking) => number.slot === booking.time);
+                                        if(!isbooked) {
+                                            return (
+                                                <Pressable  key={number.key} style={
+                                                    ({pressed}) => [
+                                                        pressed ? styles.itemPressed : styles.item
+                                                    ]
+                                                }
+                                                onPress={() => chooseATime(number.slot)}>
+                                                    <Text style={styles.itemText}>{number.slot}</Text>
+                                                </Pressable>                                                    
+                                            );
+                                        }
+                                    })
+                                }
+                            </View>
+                        </Modal>                                               
                         <Pressable style={({pressed}) => [
                             pressed ? styles.buttonPressed : styles.button
-                        ]}>
+                        ]}
+                        onPress={createNewBooking}>
                             <Text style={styles.buttonText}>Create</Text>
                         </Pressable>
                     </View>
@@ -135,7 +246,10 @@ function Facility() {
             {edit ? (
                 <View style={styles.overlay}>
                     <View style={styles.editHolder}>
-                        <Pressable style={styles.close} onPress={() => setEdit(false)}>
+                        <Pressable style={styles.close} onPress={() => {
+                            setEdit(false);
+                            setSelectedSlot('Select a Slot');
+                            }}>
                             <Octicons name='x' color="#344e41" size={24}/>
                         </Pressable>
                         <Text style={styles.addHeading}>Edit Booking</Text>
@@ -148,19 +262,47 @@ function Facility() {
                         </Pressable>
                         <View style={styles.slotSelectHolder}>
                             <Text style={[styles.inputLabel, {padding: 10}]}>Time Slot:</Text>
-                            <Pressable style={styles.slotSelection}>
+                            <Pressable style={styles.slotSelection} onPress={() => setChooseTime(!chooseTime)}>
                                 <Text style={styles.slotText}>{selectedSlot}</Text>
                             </Pressable>
                         </View>
+                        <Modal
+                            animationType="fade"
+                            transparent={true}
+                            visible={chooseTime}
+                            onRequestClose={() => setChooseTime(false)}
+                        >
+                            <View style={styles.slotList}>
+                                {
+                                    timeSlotNumbers.map((number) => {
+                                        const isbooked = bookings.some((booking) => number.slot === booking.time);
+                                        if(!isbooked) {
+                                            return (
+                                                <Pressable  key={number.key} style={
+                                                    ({pressed}) => [
+                                                        pressed ? styles.itemPressed : styles.item
+                                                    ]
+                                                }
+                                                onPress={() => chooseATime(number.slot)}>
+                                                    <Text style={styles.itemText}>{number.slot}</Text>
+                                                </Pressable>                                                    
+                                            );
+                                        }
+                                    })
+                                }
+                            </View>
+                        </Modal>      
                         <View style={styles.buttonHolder}>
                             <Pressable style={({pressed}) => [
                                 pressed ? styles.buttonPressed : styles.button
-                            ]}>
+                            ]}
+                            onPress={() => editBooking(selectedBookingId, date, selectedSlot)}>
                                 <Text style={styles.buttonText}>Edit</Text>
                             </Pressable>
                             <Pressable style={({pressed}) => [
                                 pressed ? styles.deletePressed : styles.delete
-                            ]}>
+                            ]}
+                            onPress={() => removeBooking(selectedBookingId)}>
                                 <Text style={styles.buttonText}>Delete</Text>
                             </Pressable>
                         </View>
@@ -213,7 +355,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         fontSize: 22,
-        marginBottom: 30
+        marginBottom: 15
     },
     editHolder: {
         backgroundColor: '#f5f5f5',
@@ -454,16 +596,13 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     slotSelectHolder: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 20,
-        marginTop: 20
+        marginBottom: 10,
+        marginTop: 20,
     },
     slotSelection: {
         padding: 10,
         borderColor: '#3A5A40',
         borderWidth: 0.5,
-        width: '50%',
         borderRadius: 15,
         elevation: 5,
         backgroundColor: '#f5f5f5'
@@ -474,6 +613,36 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center'
     },
+    slotList: {
+        backgroundColor: '#f5f5f5',
+        borderRadius: 10,
+        borderColor: '#3a5a40',
+        borderWidth: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 'auto',
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        width: '80%',
+        marginBottom: 'auto',
+        elevation: 5
+    },
+    item: {
+        width: '100%',
+        height: 50,
+    },
+    itemPressed: {
+        width: '100%',
+        height: 50,
+        opacity: 0.5
+    },
+    itemText: {
+        textAlign: 'center',
+        marginTop: 'auto',
+        marginBottom: 'auto',
+        fontFamily: 'Figtree-VariableFont_wght',
+        color: '#344E41',
+    }
 })
 
 export default Facility;

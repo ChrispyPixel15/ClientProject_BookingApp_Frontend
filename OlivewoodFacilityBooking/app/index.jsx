@@ -9,7 +9,6 @@ function WelcomeScreen() {
     const router = useRouter();
 
     function login() {
-        test();
         router.navigate('/accounts/login');
     }
 

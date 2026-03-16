@@ -1,15 +1,32 @@
+import { getAllUsers } from "@/api/api";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function PinResetInfo() {
-    const access = false;
+    const [access, setAccess] = useState(false);
     const router = useRouter();
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
+    const [unit, setUnit] = useState('');
+    const [allUsers, setAllUsers] = useState([]);
 
-    function resetContinue() {
-        if (access) {
-            router.navigate('/accounts/resetGranted');
+    useEffect(() => {
+        async function findAllUsers() {
+            const data = await getAllUsers();
+            console.log(data);
+            setAllUsers(data);
+        }
+        findAllUsers();
+    }, []);
+
+    function pinResetAttempt() {
+        const allow = allUsers.filter((user) => user.name === name && user.number === number && user.unit === parseInt(unit));
+        console.log(allow[0] && allow[0].resetreq);
+        if (allow) {
+            router.push(`/accounts/resetGranted/${allow[0] && allow[0].id}`);
         }
         else {
             router.navigate('/accounts/resetDenied')
@@ -25,14 +42,14 @@ function PinResetInfo() {
                 <Text style={styles.loginText}>PIN Reset</Text>
                 <View style={styles.formHolder}>
                     <Text style={styles.inputLabel}>Name</Text>
-                    <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" />
+                    <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" onChangeText={(e) => setName(e)} value={name} />
                     <Text style={styles.inputLabel}>Cell Number</Text>
-                    <TextInput style={styles.input} placeholder="Cell Number..." placeholderTextColor="#a3b18a" />
+                    <TextInput style={styles.input} placeholder="Cell Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNumber(e)} value={number} />
                     <Text style={styles.inputLabel}>House Number</Text>
-                    <TextInput style={[styles.input, {marginBottom: 8}]} placeholder="PIN..." placeholderTextColor="#a3b18a" />
+                    <TextInput style={[styles.input, {marginBottom: 8}]} placeholder="House Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setUnit(e)} value={unit} />
                     <Pressable style={({pressed}) => [
                         pressed ? styles.buttonPressed : styles.button
-                    ]} onPress={resetContinue}>
+                    ]} onPress={pinResetAttempt}>
                         <Text style={styles.buttonText}>Continue</Text>
                     </Pressable>
                 </View>
