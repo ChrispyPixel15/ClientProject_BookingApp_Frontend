@@ -1,4 +1,3 @@
-import { test } from "@/api/api";
 import { useRouter } from "expo-router";
 import { Pressable, StatusBar, StyleSheet, Text } from "react-native";
 import { View } from "react-native"; 
@@ -77,7 +76,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     buttonText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         fontSize: 18,
         color: '#ffffff',
         textAlign: 'center',

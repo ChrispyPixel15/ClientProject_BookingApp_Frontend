@@ -24,8 +24,8 @@ function PinResetInfo() {
 
     function pinResetAttempt() {
         const allow = allUsers.filter((user) => user.name === name && user.number === number && user.unit === parseInt(unit));
-        console.log(allow[0] && allow[0].resetreq);
-        if (allow) {
+        console.log(allow[0] && allow[0].resetreq === true);
+        if (allow[0].resetreq) {
             router.push(`/accounts/resetGranted/${allow[0] && allow[0].id}`);
         }
         else {
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     buttonText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         fontSize: 18,
         color: '#ffffff',
         textAlign: 'center',

@@ -34,15 +34,26 @@ function Facility() {
 
     useEffect(() => {
         async function fetchFacility() {
-            const data = await openFacility(id);
-            setCurrentFacility(data);
+            try {
+                const data = await openFacility(id);
+                setCurrentFacility(data);
+            }
+            catch (err) {
+                router.replace('/accounts/login');
+            }
+            
         }
         fetchFacility();
 
         async function findUserId() {
-            const useid = await getUserID();
-            setCurrentUserId(useid);
-            console.log(useid);
+            try {
+                const useid = await getUserID();
+                setCurrentUserId(useid);
+            }
+            catch (err) {
+                console.log(err);
+                router.replace('/accounts/login')
+            }            
         }
         findUserId();
 
@@ -59,6 +70,7 @@ function Facility() {
             }
             catch (err) {
                 console.log(err);
+                router.replace('/accounts/login')
             }
         }
         checkRole();
@@ -66,8 +78,13 @@ function Facility() {
 
     useEffect(() => {
         async function fetchFacilityBookings() {
-            const data = await facilityBookings(id);
-            setBookings(data);
+            try {
+                const data = await facilityBookings(id);
+                setBookings(data);  
+            }
+            catch (err) {
+                router.replace('/accounts/login');
+            }
         }
         fetchFacilityBookings();
     }, [refreshKey])
@@ -88,18 +105,31 @@ function Facility() {
     }
 
     async function createNewBooking() {
-        await newBooking(currentUserId, id, date.toISOString().split('T')[0], selectedSlot);
-        setRefreshKey(refreshKey + 1);
-        setAdd(false);
-        setSelectedSlot('Select a Slot');
+        try {
+            await newBooking(currentUserId, id, date, selectedSlot);
+            setRefreshKey(refreshKey + 1);
+            setAdd(false);
+            setSelectedSlot('Select a Slot');
+        }
+        catch (err) {
+            console.log(err);
+            router.replace('/accounts/login');
+        }
+        
     }
 
-    function editBooking(bookingid, date, time) {
-        updateBooking(bookingid, date, time);
-        setChooseTime('Select a Slot');
-        setSelectedBookingId('');
-        setRefreshKey(refreshKey + 1);
-        setEdit(false);
+    async function editBooking(bookingid, date, time) {
+        try {
+            await updateBooking(bookingid, date, time);
+            setSelectedSlot('Select a Slot');
+            setSelectedBookingId('');
+            setRefreshKey(refreshKey + 1);
+            setEdit(false);
+        }
+        catch (err) {
+            router.replace('/accounts/login');
+        }
+        
     }
 
     function activateEdit(time, id) {
@@ -109,11 +139,17 @@ function Facility() {
     }
 
     async function removeBooking(id) {
-        await deleteBooking(id);
-        setSelectedSlot('Select a Slot');
-        setSelectedBookingId(null);
-        setRefreshKey(refreshKey + 1);
-        setEdit(false);
+        try {
+            await deleteBooking(id);
+            setSelectedSlot('Select a Slot');
+            setSelectedBookingId(null);
+            setRefreshKey(refreshKey + 1);
+            setEdit(false);
+        }
+        catch (err) {
+            router.replace('/accounts/login');
+        }
+            
     } 
 
     return (
@@ -481,7 +517,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     buttonText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         fontSize: 18,
         color: '#ffffff',
         textAlign: 'center',

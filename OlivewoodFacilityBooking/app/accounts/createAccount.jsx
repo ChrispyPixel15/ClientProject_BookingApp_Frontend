@@ -37,7 +37,7 @@ function CreateAccount() {
                 <Text style={styles.inputLabel}>House Number</Text>
                 <TextInput style={styles.input} placeholder="House Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setUnit(e)} value={unit} />
                 <Text style={styles.inputLabel}>PIN</Text>
-                <TextInput style={[styles.input, {marginBottom: 0}]} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setPin(e)} value={pin} />
+                <TextInput style={[styles.input, {marginBottom: 0}]} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setPin(e)} value={pin} secureTextEntry={true} />
                 <Text style={styles.pinText}>Choose a 5 digit PIN</Text>
                 <Pressable style={({pressed}) => [
                    pressed ? styles.buttonPressed : styles.button
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     buttonText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         fontSize: 18,
         color: '#ffffff',
         textAlign: 'center',

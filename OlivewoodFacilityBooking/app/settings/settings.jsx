@@ -24,8 +24,14 @@ function Settings() {
 
     useEffect(() => {
         async function getUserInfo() {
-            const info = await getUser();
-            setUser(info);
+            try {
+                const info = await getUser();
+                setUser(info);
+            }
+            catch (err) {
+                router.replace("/accounts/login");
+            }
+            
         }
         getUserInfo();
     }, [refreshKey])
@@ -35,25 +41,36 @@ function Settings() {
     }
 
     function allowReset() {
-        acceptRequest(resName, resNumber, resUnit);
-        setResName('');
-        setResNumber('');
-        setResUnit('');
-        setPinReset(false);
+        try {
+            acceptRequest(resName, resNumber, resUnit);
+            setResName('');
+            setResNumber('');
+            setResUnit('');
+            setPinReset(false);
+        }
+        catch (err) {
+            router.replace("/accounts/login");
+        }
+        
     }
 
-    function editAInformation() {
-        if (editMode === "Name") {
-            editUser(user.id, {name: newInfo});
+    async function editAInformation() {
+        try {
+            if (editMode === "Name") {
+                await editUser(user.id, {name: newInfo});
+            }
+            else if (editMode === "Number") {
+                await editUser(user.id, {number: newInfo});
+            }
+            else {
+                await editUser(user.id, {unit: newInfo});
+            }
+            setRefreshKey(refreshKey + 1);
+            setEdit(false);
         }
-        else if (editMode === "Number") {
-            editUser(user.id, {number: newInfo});
-        }
-        else {
-            editUser(user.id, {unit: newInfo});
-        }
-        setRefreshKey(refreshKey + 1);
-        setEdit(false);
+        catch (err) {
+            router.replace("/accounts/login");
+        }        
     }
 
     function editInfo(mode, info) {
@@ -256,7 +273,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     buttonText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         fontSize: 18,
         color: '#ffffff',
         textAlign: 'center',

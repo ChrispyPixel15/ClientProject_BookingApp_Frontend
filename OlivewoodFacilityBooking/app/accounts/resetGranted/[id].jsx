@@ -36,7 +36,7 @@ function ResetGranted() {
                 <Text style={styles.loginText}>PIN Reset</Text>
                 <View style={styles.formHolder}>
                     <Text style={styles.inputLabel}>New PIN</Text>
-                    <TextInput style={styles.input} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNewPin(e)} value={newPin} />
+                    <TextInput style={styles.input} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNewPin(e)} value={newPin} secureTextEntry={true} />
                     <Pressable style={({pressed}) => [
                         pressed ? styles.buttonPressed : styles.button
                     ]} onPress={reset}>
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     buttonText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         fontSize: 18,
         color: '#ffffff',
         textAlign: 'center',

@@ -24,6 +24,7 @@ function Facilities() {
             }
             catch (err) {
                 console.log(err);
+                router.replace('/accounts/login');
             }
         }
         checkRole();
@@ -37,24 +38,35 @@ function Facilities() {
             }
             catch (err) {
                 console.log(err);
+                router.replace('/accounts/login');
             }
         }
         fetchFacilities();
-        console.log(facs);
     }, [refreshKey])
 
     function createNewFacility() {
-        createFacility(facilityName);
-        setRefreshKey(refreshKey + 1);
-        setFacilityName('');
-        setAddFacility(false);
+        try {
+            createFacility(facilityName);
+            setRefreshKey(refreshKey + 1);
+            setFacilityName('');
+            setAddFacility(false);
+        }
+        catch (err) {
+            router.replace('/accounts/login');
+        }
     }
 
-    function deleteAFacility(id) {
-        deleteFacility(id);
-        setRefreshKey(refreshKey + 1);
-        setSelectedFacilityId(null);
-        setEdit(false);
+    async function deleteAFacility(id) {
+        try {
+            await deleteFacility(id);
+            setRefreshKey(refreshKey + 1);
+            setSelectedFacilityId(null);
+            setEdit(false);
+        }
+        catch (err) {
+            router.replace('/accounts/login');
+        }
+        
     }
 
     function activateEditFacility(id, name) {
@@ -63,12 +75,17 @@ function Facilities() {
         setEdit(true);
     }
 
-    function editAFacility(id) {
-        editFacility(id, facilityName);
-        setRefreshKey(refreshKey + 1);
-        setSelectedFacilityId(null);
-        setFacilityName('');
-        setEdit(false);
+    async function editAFacility(id) {        
+        try {
+            await editFacility(id, facilityName);
+            setRefreshKey(refreshKey + 1);
+            setSelectedFacilityId(null);
+            setFacilityName('');
+            setEdit(false);
+        }
+        catch (err) {
+            router.replace('/accounts/login');
+        }
     }
 
     function goToFacility(id) {
@@ -132,6 +149,7 @@ function Facilities() {
                     ))
                 }
             </ScrollView>
+            
             {addFacility ? (
                 <View style={styles.overlay}>
                     <View style={styles.addFacilityHolder}>
@@ -300,7 +318,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     buttonText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         fontSize: 18,
         color: '#ffffff',
         textAlign: 'center',
@@ -389,12 +407,12 @@ const styles = StyleSheet.create({
         position: 'relative'
     },
     facilityText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         color: '#ffffff',
         fontSize: 20
     },
     facilityUnavailableText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         color: '#acacac',
         fontSize: 20
     },
@@ -411,7 +429,7 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     slotsText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         fontSize: 13,
         color: '#ffffff',
         marginRight: 'auto',
@@ -420,7 +438,7 @@ const styles = StyleSheet.create({
         marginBottom: 'auto',
     },
     slotsUnavailableText: {
-        fontFamily: 'Roboto-VariableFont_wdth,wght',
+        fontFamily: 'Figtree-VariableFont_wght',
         fontSize: 13,
         color: '#acacac',
         marginRight: 'auto',

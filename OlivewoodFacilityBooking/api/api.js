@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 
-const API_URL = "http://192.168.8.101:9000";
+const API_URL = "http://192.168.8.103:9000";
 
 async function loginUser(number, pin) {
   try {
@@ -49,7 +49,7 @@ async function getUser() {
 }
 
 async function editUser(id, edited) {
-   const token = await AsyncStorage.getItem("token");
+  const token = await AsyncStorage.getItem("token");
 
   if (!token) {
     throw new Error("No token found");
