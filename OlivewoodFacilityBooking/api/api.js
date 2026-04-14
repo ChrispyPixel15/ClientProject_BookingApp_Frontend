@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 
-const API_URL = "http://192.168.8.103:9000";
+const API_URL = "http://192.168.8.116:9000";
 
 async function loginUser(number, pin) {
   try {

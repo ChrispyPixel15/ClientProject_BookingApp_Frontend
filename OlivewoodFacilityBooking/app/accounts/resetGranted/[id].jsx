@@ -1,8 +1,8 @@
 import { getAllUsers, updateUserPin } from "@/api/api";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { KeyboardAvoidingView, Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function ResetGranted() {
@@ -30,6 +30,8 @@ function ResetGranted() {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle='dark-content' backgroundColor='#f5f5f5' />
+            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="height" enabled >
+                            <ScrollView>
                 <View style={styles.logoHolder}>
                     <Text style={styles.logoText}>Estate Facility Booking</Text>
                 </View>
@@ -43,6 +45,8 @@ function ResetGranted() {
                         <Text style={styles.buttonText}>Reset</Text>
                     </Pressable>
                 </View>
+                </ScrollView>
+                </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }

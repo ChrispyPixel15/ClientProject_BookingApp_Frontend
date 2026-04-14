@@ -2,8 +2,8 @@ import { UserContext } from "@/contexts/UserContext";
 import { CommonActions } from "@react-navigation/native";
 import { useNavigation, useRouter } from "expo-router";
 import { useContext, useState } from "react";
-import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { KeyboardAvoidingView, Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function Login() {
@@ -37,6 +37,8 @@ function Login() {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle='dark-content' backgroundColor='#f5f5f5' />
+            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="height" enabled >
+                                                    <ScrollView>
                 <View style={styles.logoHolder}>
                     <Text style={styles.logoText}>Estate Facility Booking</Text>
                 </View>
@@ -60,6 +62,8 @@ function Login() {
                         <Text style={styles.link}>Register</Text>
                     </Pressable>
                 </View>
+                </ScrollView>
+                </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }

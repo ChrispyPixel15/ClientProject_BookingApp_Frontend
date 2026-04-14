@@ -1,8 +1,8 @@
 import { registerUser } from "@/api/api";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { KeyboardAvoidingView, Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function CreateAccount() {
@@ -25,6 +25,8 @@ function CreateAccount() {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle='dark-content' backgroundColor='#f5f5f5' />
+            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="height" enabled >
+                                        <ScrollView>
             <View style={styles.logoHolder}>
                 <Text style={styles.logoText}>Estate Facility Booking</Text>
             </View>
@@ -33,11 +35,11 @@ function CreateAccount() {
                 <Text style={styles.inputLabel}>Name</Text>
                 <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" onChangeText={(e) => setName(e)} value={name} />
                 <Text style={styles.inputLabel}>Cell Number</Text>
-                <TextInput style={styles.input} placeholder="Cell Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNumber(e)} value={number} />
+                <TextInput style={styles.input} placeholder="Cell Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNumber(e)} value={number} keyboardType="number-pad" />
                 <Text style={styles.inputLabel}>House Number</Text>
                 <TextInput style={styles.input} placeholder="House Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setUnit(e)} value={unit} />
                 <Text style={styles.inputLabel}>PIN</Text>
-                <TextInput style={[styles.input, {marginBottom: 0}]} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setPin(e)} value={pin} secureTextEntry={true} />
+                <TextInput style={[styles.input, {marginBottom: 0}]} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setPin(e)} value={pin} secureTextEntry={true} keyboardType="number-pad" />
                 <Text style={styles.pinText}>Choose a 5 digit PIN</Text>
                 <Pressable style={({pressed}) => [
                    pressed ? styles.buttonPressed : styles.button
@@ -49,6 +51,8 @@ function CreateAccount() {
                     <Text style={styles.link}>Log In</Text>
                 </Pressable>
             </View>
+            </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }

@@ -1,9 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { KeyboardAvoidingView, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons } from '@react-native-vector-icons/octicons';
 import { useNavigation, useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { TextInput } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { UserContext } from "@/contexts/UserContext";
 import { acceptRequest, editUser, getUser, test } from "@/api/api";
 import { CommonActions } from "@react-navigation/native";
@@ -179,8 +179,11 @@ function Settings() {
                 <View></View>
             )}
             {pinReset ? (
+                
+                                
                 <View style={styles.overlay}>
-                    <View style={styles.editInfoHolder}>
+                    <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="height" enabled >
+                    <View style={[styles.editInfoHolder, {marginTop: 0}]}>
                         <Pressable style={styles.close} onPress={() => setPinReset(false)}>
                             <Octicons name='x' color="#344e41" size={24}/>
                         </Pressable>
@@ -190,7 +193,7 @@ function Settings() {
                         <Text style={styles.inputLabel}>Unit</Text>
                         <TextInput style={styles.input} onChangeText={(e) => setResUnit(e)} value={resUnit} placeholder='Unit...' placeholderTextColor="#a3b18a" />
                         <Text style={styles.inputLabel}>Cell Number</Text>
-                        <TextInput style={styles.input} onChangeText={(e) => setResNumber(e)} value={resNumber} placeholder='Cell Number...' placeholderTextColor="#a3b18a" />
+                        <TextInput style={styles.input} onChangeText={(e) => setResNumber(e)} value={resNumber} placeholder='Cell Number...' placeholderTextColor="#a3b18a" keyboardType="number-pad" />
                         <Pressable style={({pressed}) => [
                             pressed ? styles.buttonPressed : styles.button
                         ]}
@@ -198,6 +201,7 @@ function Settings() {
                             <Text style={styles.buttonText}>Allow Reset</Text>
                         </Pressable>
                     </View>
+                    </KeyboardAvoidingView>
                 </View>
             ) : (
                 <View></View>

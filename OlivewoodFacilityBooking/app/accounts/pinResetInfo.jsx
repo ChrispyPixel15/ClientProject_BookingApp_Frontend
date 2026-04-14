@@ -1,8 +1,8 @@
 import { getAllUsers } from "@/api/api";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { KeyboardAvoidingView, Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function PinResetInfo() {
@@ -36,23 +36,27 @@ function PinResetInfo() {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle='dark-content' backgroundColor='#f5f5f5' />
-                <View style={styles.logoHolder}>
-                    <Text style={styles.logoText}>Estate Facility Booking</Text>
-                </View>
-                <Text style={styles.loginText}>PIN Reset</Text>
-                <View style={styles.formHolder}>
-                    <Text style={styles.inputLabel}>Name</Text>
-                    <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" onChangeText={(e) => setName(e)} value={name} />
-                    <Text style={styles.inputLabel}>Cell Number</Text>
-                    <TextInput style={styles.input} placeholder="Cell Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNumber(e)} value={number} />
-                    <Text style={styles.inputLabel}>House Number</Text>
-                    <TextInput style={[styles.input, {marginBottom: 8}]} placeholder="House Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setUnit(e)} value={unit} />
-                    <Pressable style={({pressed}) => [
-                        pressed ? styles.buttonPressed : styles.button
-                    ]} onPress={pinResetAttempt}>
-                        <Text style={styles.buttonText}>Continue</Text>
-                    </Pressable>
-                </View>
+            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="height" enabled >
+                <ScrollView>
+                    <View style={styles.logoHolder}>
+                        <Text style={styles.logoText}>Estate Facility Booking</Text>
+                    </View>
+                    <Text style={styles.loginText}>PIN Reset</Text>
+                    <View style={styles.formHolder}>
+                        <Text style={styles.inputLabel}>Name</Text>
+                        <TextInput style={styles.input} placeholder="Name..." placeholderTextColor="#a3b18a" onChangeText={(e) => setName(e)} value={name} />
+                        <Text style={styles.inputLabel}>Cell Number</Text>
+                        <TextInput style={styles.input} placeholder="Cell Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNumber(e)} value={number} keyboardType="number-pad" />
+                        <Text style={styles.inputLabel}>House Number</Text>
+                        <TextInput style={[styles.input, {marginBottom: 8}]} placeholder="House Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setUnit(e)} value={unit} />
+                        <Pressable style={({pressed}) => [
+                            pressed ? styles.buttonPressed : styles.button
+                        ]} onPress={pinResetAttempt}>
+                            <Text style={styles.buttonText}>Continue</Text>
+                        </Pressable>
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }
@@ -64,7 +68,8 @@ const styles = StyleSheet.create({
     },
     logoHolder: {
         flex: 0.3,
-        marginTop: 150
+        marginTop: 130,
+        marginBottom: 30
     },
     logoText: {
         fontFamily: 'Figtree-VariableFont_wght',
