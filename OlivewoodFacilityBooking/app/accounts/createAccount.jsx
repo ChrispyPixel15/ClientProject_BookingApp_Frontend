@@ -11,6 +11,7 @@ function CreateAccount() {
     const [number, setNumber] = useState('');
     const [unit, setUnit] = useState('');
     const [pin, setPin] = useState('');
+    const [err, setErr] = useState('');
 
 
     function login() {
@@ -18,8 +19,14 @@ function CreateAccount() {
     }
 
     function createAccount() {
-        registerUser(name, number, unit, pin);
-        router.navigate('/accounts/login');
+        try {
+            registerUser(name, number, unit, pin);
+            setErr('');
+            router.navigate('/accounts/login');
+        }
+        catch (err) {
+            setErr("Account creation unsuccessful.")
+        }
     }
 
     return (
@@ -41,6 +48,7 @@ function CreateAccount() {
                 <Text style={styles.inputLabel}>PIN</Text>
                 <TextInput style={[styles.input, {marginBottom: 0}]} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setPin(e)} value={pin} secureTextEntry={true} keyboardType="number-pad" />
                 <Text style={styles.pinText}>Choose a 5 digit PIN</Text>
+                <Text>{err}</Text>
                 <Pressable style={({pressed}) => [
                    pressed ? styles.buttonPressed : styles.button
                 ]} onPress={createAccount}>

@@ -24,6 +24,8 @@ function Settings() {
     const [resUnit, setResUnit] = useState('');
     const [resNumber, setResNumber] = useState('');
 
+    const [resetErr, setResetErr] = useState('');
+
     useEffect(() => {
         async function getUserInfo() {
             try {
@@ -49,9 +51,10 @@ function Settings() {
             setResNumber('');
             setResUnit('');
             setPinReset(false);
+            setResetErr('');
         }
         catch (err) {
-            router.replace("/accounts/login");
+            setResetErr("User not found. Details may be incorrect.")
         }
         
     }
@@ -194,6 +197,7 @@ function Settings() {
                         <TextInput style={styles.input} onChangeText={(e) => setResUnit(e)} value={resUnit} placeholder='Unit...' placeholderTextColor="#a3b18a" />
                         <Text style={styles.inputLabel}>Cell Number</Text>
                         <TextInput style={styles.input} onChangeText={(e) => setResNumber(e)} value={resNumber} placeholder='Cell Number...' placeholderTextColor="#a3b18a" keyboardType="number-pad" />
+                        <Text>{resetErr}</Text>
                         <Pressable style={({pressed}) => [
                             pressed ? styles.buttonPressed : styles.button
                         ]}

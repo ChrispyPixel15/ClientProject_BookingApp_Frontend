@@ -20,7 +20,7 @@ function UserProvider({children}) {
             return true;
         }
         catch (err) {
-            setLoginErr(err.message);
+            setLoginErr("Your number or password is incorrect.");
             setTokenValid(false);
             return false;
         }
