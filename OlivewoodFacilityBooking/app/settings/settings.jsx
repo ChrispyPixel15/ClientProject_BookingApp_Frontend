@@ -45,6 +45,7 @@ function Settings() {
     }
 
     function allowReset() {
+        if (resName != '' && resNumber != '' && resUnit != '')
         try {
             acceptRequest(resName, resNumber, resUnit);
             setResName('');
@@ -55,6 +56,7 @@ function Settings() {
         }
         catch (err) {
             setResetErr("User not found. Details may be incorrect.")
+            setPinReset(true);
         }
         
     }
