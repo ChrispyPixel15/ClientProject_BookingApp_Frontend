@@ -98,9 +98,6 @@ async function acceptRequest(name, number, unit) {
   if (!response.ok) {
     throw new Error("User not Found");
   }
-  else if (response.status === 404) {
-    throw new Error("User not found");
-  }
 
   return data;
 }

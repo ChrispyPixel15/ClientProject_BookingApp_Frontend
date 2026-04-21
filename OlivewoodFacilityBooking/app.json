@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "OlivewoodFacilityBooking",
-    "slug": "OlivewoodFacilityBooking",
+    "slug": "olivewoodfacilitybooking-slug",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,6 +10,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.chrispypixel.OlivewoodBookingApp.ios",
+      "buildNumber": "1.0.0",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

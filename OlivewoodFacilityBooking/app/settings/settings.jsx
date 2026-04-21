@@ -44,10 +44,9 @@ function Settings() {
         router.navigate('/facilities/facilities');
     }
 
-    function allowReset() {
-        if (resName != '' && resNumber != '' && resUnit != '')
+    async function allowReset() {
         try {
-            acceptRequest(resName, resNumber, resUnit);
+            await acceptRequest(resName, resNumber, resUnit);
             setResName('');
             setResNumber('');
             setResUnit('');
@@ -56,7 +55,6 @@ function Settings() {
         }
         catch (err) {
             setResetErr("User not found. Details may be incorrect.")
-            setPinReset(true);
         }
         
     }
@@ -189,7 +187,13 @@ function Settings() {
                 <View style={styles.overlay}>
                     <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="height" enabled >
                     <View style={[styles.editInfoHolder, {marginTop: 0}]}>
-                        <Pressable style={styles.close} onPress={() => setPinReset(false)}>
+                        <Pressable style={styles.close} onPress={() => {
+                            setPinReset(false);
+                            setResName('');
+                            setResUnit('');
+                            setResNumber('');
+                            setResetErr('');
+                        }}>
                             <Octicons name='x' color="#344e41" size={24}/>
                         </Pressable>
                         <Text style={styles.editHeading}>PIN Reset Request</Text>
