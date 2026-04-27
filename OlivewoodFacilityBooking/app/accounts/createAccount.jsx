@@ -19,14 +19,19 @@ function CreateAccount() {
     }
 
     function createAccount() {
-        try {
-            registerUser(name, number, unit, pin);
-            setErr('');
-            router.navigate('/accounts/login');
+        if (name !== '' && number !== '', unit !== '', pin !== '') {
+            try {
+                registerUser(name, number, unit, pin);
+                setErr('');
+                router.navigate('/accounts/login');
+            }
+            catch (err) {
+                setErr("Account creation unsuccessful.");
+            }
         }
-        catch (err) {
-            setErr("Account creation unsuccessful.")
-        }
+        else {
+            setErr("Account creation unsuccessful.");
+        }        
     }
 
     return (
