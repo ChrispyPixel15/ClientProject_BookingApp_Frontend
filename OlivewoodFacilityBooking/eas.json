@@ -26,7 +26,7 @@
     "production": {
       "autoIncrement": true,
       "android": {
-        "gradleCommand": ":app:bundleRelease"
+        "buildType": "apk"
       },
       "ios": {
         "distribution": "store"
