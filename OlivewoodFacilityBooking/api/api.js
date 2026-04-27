@@ -24,6 +24,31 @@ async function loginUser(number, pin) {
   }
 }
 
+// async function deleteUser() {
+//   const token = await AsyncStorage.getItem("token");
+
+//   try {
+//     const response = await fetch(`${API_URL}/users/2`, {
+//       method: "DELETE",
+//        headers: {
+//       "Authorization": `Bearer ${token}`,
+//       "Content-Type": "application/json",      
+//     },
+//     });
+
+//     const data = await response.json();
+
+//     if (!response.ok) {
+//       throw new Error(err.error || "Login failed.");
+//     }    
+    
+//     return data;
+//   } catch (error) {
+//     console.error("Error logging user in:", error);
+//     throw error;
+//   }
+// }
+
 async function getUser() {
   const token = await AsyncStorage.getItem("token");
 
@@ -427,5 +452,5 @@ export {
   getAllUsers,
   updateBooking,
   deleteBooking,
-  updateUserPin
+  updateUserPin,
 }

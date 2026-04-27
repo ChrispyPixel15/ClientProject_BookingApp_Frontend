@@ -5,7 +5,7 @@ import { useNavigation, useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { UserContext } from "@/contexts/UserContext";
-import { acceptRequest, editUser, getUser, test } from "@/api/api";
+import { acceptRequest, editUser, getUser, test, deleteUser } from "@/api/api";
 import { CommonActions } from "@react-navigation/native";
 
 function Settings() {
@@ -92,6 +92,10 @@ function Settings() {
                 routes: [{ name: "index" }],
             })
         );
+    }
+
+    function deleteIt() {
+        deleteUser();
     }
 
     return (
