@@ -406,8 +406,27 @@ async function deleteBooking(id) {
 }
 
 async function getAllUsers() {
-  const response = await fetch(`${API_URL}/users/all`);
+  const token = await AsyncStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Token not found.");
+  }
+
+
+  const response = await fetch(`${API_URL}/users/all`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",      
+    },
+  });
   const data = await response.json();   // wait for JSON to resolve
+
+  if (!response.ok) {
+    throw new Error(data.error || "Could Not Fetch Data");
+  }
+
+
   return data;
 }
 

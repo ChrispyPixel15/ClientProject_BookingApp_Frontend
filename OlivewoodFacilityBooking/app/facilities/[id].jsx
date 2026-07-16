@@ -60,6 +60,7 @@ function Facility() {
         async function findAllUsers() {
             const data = await getAllUsers();
             setAllUsers(data);
+            console.log(data);
         }
         findAllUsers();
 
@@ -189,7 +190,7 @@ function Facility() {
                                         return (
                                             <View key={key} style={styles.timeCard}>
                                                 {
-                                                    (userRole === "ADMIN" || currentUserId === allUsers.find(user => user.id === booking.userid).id) ? (
+                                                    (userRole === "ADMIN" || currentUserId === allUsers.find(user => user.id === booking.userid)?.id) ? (
                                                         <Pressable style={({pressed}) => [
                                                             pressed ? styles.editPressed : styles.edit
                                                         ]}
@@ -200,7 +201,7 @@ function Facility() {
                                                         <View style={styles.edit}></View>
                                                     )
                                                 }
-                                                <Text style={styles.timeCardText}>{allUsers.find((user) => user.id === booking.userid).name}</Text>
+                                                <Text style={styles.timeCardText}>{allUsers.find((user) => user.id === booking.userid)?.name}</Text>
                                                 <Text style={styles.timeCardText}>{booking.time}</Text>
                                             </View>
                                         )

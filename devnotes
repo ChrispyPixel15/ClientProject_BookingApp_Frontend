@@ -1,0 +1,4 @@
+1. Make it so when user logs in, the app fetches token and stays logged in. 
+2. Figure out why it logs out when user tries to create booking
+    - It seems as if it struggles to fetch the facility. 
+    - when creating the booking it closes the app completely.

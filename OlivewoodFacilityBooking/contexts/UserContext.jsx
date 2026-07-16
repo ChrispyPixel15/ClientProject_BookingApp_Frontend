@@ -11,6 +11,8 @@ function UserProvider({children}) {
     const [loginErr, setLoginErr] = useState('');
     const [tokenValid, setTokenValid] = useState(false);
 
+    //use effect to check for token and keep user logged in maybe?
+
     async function handleLogin(number, pin) {
         try {
             const token = await loginUser(number, pin);

@@ -12,21 +12,27 @@ function Login() {
     const [pin, setPin] = useState('');
     const { handleLogin, loginErr } = useContext(UserContext);
     const navigation = useNavigation();
+    const [buttonWord, setButtonWord] = useState("Login");
+    const [err, setErr] = useState(false)
     
     function createAccount() {
         router.navigate('/accounts/createAccount');
     }
 
     async function login() {
+        setButtonWord("Loading");
         await handleLogin(number, pin);
         if (handleLogin) {
+            setErr(false);
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
                 routes: [{ name: "facilities/facilities" }],
             })
         );
-
+        
+        } else {
+            setErr(true);
         }
     }
 
@@ -44,18 +50,24 @@ function Login() {
                 </View>
                 <Text style={styles.loginText}>Log In</Text>
                 <View style={styles.formHolder}>
+                    {loginErr !== '' ? (
+                        <View style={styles.error}>
+                            <Text style={styles.errortext}>Your password or username is incorrect.</Text>
+                        </View>
+                    ) : (
+                        <View></View>
+                    )}
                     <Text style={styles.inputLabel}>Cell Number</Text>
                     <TextInput style={styles.input} keyboardType="number-pad" value={number} placeholder="Cell Number..." placeholderTextColor="#a3b18a" onChangeText={(e) => setNumber(e)} />
                     <Text style={styles.inputLabel}>PIN</Text>
                     <TextInput style={[styles.input, {marginBottom: 8}]} keyboardType="number-pad" value={pin} placeholder="PIN..." placeholderTextColor="#a3b18a" onChangeText={(e) => setPin(e)} secureTextEntry={true} />
-                    <Text>{loginErr}</Text>
                     <Pressable onPress={resetPin}>
                         <Text style={styles.resetLink}>Reset PIN</Text>
                     </Pressable>
                     <Pressable style={({pressed}) => [
                         pressed ? styles.buttonPressed : styles.button
                     ]} onPress={login}>
-                        <Text style={styles.buttonText}>Log In</Text>
+                        <Text style={styles.buttonText}>{buttonWord}</Text>
                     </Pressable>
                     <Text style={styles.bottomText}>Not registered?</Text>
                     <Pressable onPress={createAccount}>
@@ -69,6 +81,17 @@ function Login() {
 }
 
 const styles = StyleSheet.create({
+    error: {
+        backgroundColor: "#b91414",
+        borderRadius: 10,
+        marginBottom: 10
+    },
+    errortext: {
+        color: "#f5f5f5",
+        fontFamily: 'Figtree-VariableFont_wght',
+        fontSize: 18,
+        padding: 5
+    },
     container: {
         backgroundColor: "#f5f5f5",
         flex: 1,
