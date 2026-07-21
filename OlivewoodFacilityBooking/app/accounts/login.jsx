@@ -1,7 +1,8 @@
 import { UserContext } from "@/contexts/UserContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
 import { useNavigation, useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { KeyboardAvoidingView, Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,7 +15,43 @@ function Login() {
     const navigation = useNavigation();
     const [buttonWord, setButtonWord] = useState("Login");
     const [err, setErr] = useState(false)
+    const [logged, setLogged] = useState(false);
+
+    useEffect(() => {
+        const loggedIn = async () => {
+            const log = await AsyncStorage.getItem("token");
+            console.log(log);
+            if (!isTokenExpired(log)) {
+                setLogged(true);
+                console.log("truethatis");
+            }
+            else {
+                setLogged(false);
+                console.log("nottruetahtis");
+            }
+        }
+
+        loggedIn();
+
+        if (logged) {
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: "facilities/facilities" }],
+                })
+            );
+        }
+    })
     
+    function isTokenExpired(token) {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return Date.now() >= payload.exp * 1000;
+    } catch {
+        return true;
+    }
+    }
+
     function createAccount() {
         router.navigate('/accounts/createAccount');
     }

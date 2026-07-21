@@ -34,7 +34,12 @@
     }
   },
   "submit": {
-    "preview": {
+    "production": {
+      "ios": {
+        "appleId": "chris.designed@gmail.com",
+        "ascAppId": "6762766347",
+        "appleTeamId": "QN5AAVPB36"
+      }
     }
   }
 }

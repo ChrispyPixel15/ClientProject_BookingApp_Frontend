@@ -1,4 +1,7 @@
-import { useRouter } from "expo-router";
+import { UserContext } from "@/contexts/UserContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation, useRouter } from "expo-router";
+import { useContext, useEffect, useState } from "react";
 import { Pressable, StatusBar, StyleSheet, Text } from "react-native";
 import { View } from "react-native"; 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -6,9 +9,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 function WelcomeScreen() {
     const router = useRouter();
+    const navigation = useNavigation();
+    
+
+    
 
     function login() {
-        router.navigate('/accounts/login');
+        router.navigate('/accounts/login');       
     }
 
     function createAccount() {
@@ -32,7 +39,7 @@ function WelcomeScreen() {
                 ]} onPress={createAccount}>
                     <Text style={styles.buttonText}>Register</Text>
                 </Pressable>
-            </View>
+            </View>            
         </SafeAreaView>
     )
 }

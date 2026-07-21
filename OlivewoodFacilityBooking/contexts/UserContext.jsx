@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { loginUser, logoutUser } from '../api/api';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRouter } from "expo-router";
@@ -11,12 +11,11 @@ function UserProvider({children}) {
     const [loginErr, setLoginErr] = useState('');
     const [tokenValid, setTokenValid] = useState(false);
 
-    //use effect to check for token and keep user logged in maybe?
-
     async function handleLogin(number, pin) {
         try {
             const token = await loginUser(number, pin);
             await AsyncStorage.setItem("token", token.token);
+            await AsyncStorage.setItem("loggedIn", true);
             setTokenValid(true);
             setLoginErr('');
             return true;
@@ -30,6 +29,7 @@ function UserProvider({children}) {
 
     async function logoutHandler() {
         await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("loggedIn");
         logoutUser();
         setTokenValid(false);
     }
