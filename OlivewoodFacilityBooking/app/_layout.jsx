@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import UserProvider from '@/contexts/UserContext';
 import Root from './root';
+import { initApiConfig } from '../api/api'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -16,6 +17,10 @@ export default function RootLayout() {
     'Roboto-Italic-VariableFont_wdth,wght': require('../assets/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf'),
     'Roboto-VariableFont_wdth,wght': require('../assets/fonts/Roboto-VariableFont_wdth,wght.ttf'),
   });
+
+  useEffect(() => {
+    initApiConfig(); 
+  }, []);
 
   useEffect(() => {
     if (loaded || error) {

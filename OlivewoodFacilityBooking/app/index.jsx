@@ -7,11 +7,10 @@ import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
+
 function WelcomeScreen() {
     const router = useRouter();
     const navigation = useNavigation();
-    
-
     
 
     function login() {

@@ -1,7 +1,28 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
+import * as Network from 'expo-network';
 
-const API_URL = "https://api.134.209.196.98.sslip.io";
+let API_URL = null;
+
+const API_URL_IPV4 = "https://api.134.209.196.98.sslip.io";
+const API_URL_IPV6 = "https://api.2a03-b0c0-2-f0-0-1-9c08-2001.sslip.io";
+
+export async function initApiConfig() {
+  try {
+    const ip = await Network.getIpAddressAsync();
+    if (ip.includes(".")) {
+      API_URL = API_URL_IPV4;
+    }
+    else if (ip.includes(":")) {
+      API_URL = API_URL_IPV6;
+    }
+    else {
+      API_URL = API_URL_IPV4;
+    }
+  } catch (err) {
+    console.error("Failed to detect IP version:", err);
+  }
+}
 
 async function loginUser(number, pin) {
   try {
